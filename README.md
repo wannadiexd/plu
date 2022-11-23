@@ -2,7 +2,7 @@
 
 ## Purpose
 
-The coding exercises are designed to test knowledge of the following concepts:
+The coding exercises are designed to test your knowledge of the following concepts:
 * PLU decomposition
 * The inverse of a square matrix
 
@@ -16,7 +16,7 @@ The coding exercises cover the following practical problems:
 
 ### Exercise 1: Find the PLU decomposition of a given matrix
 
-Your task is to implement the following function for finding `PLU decomposition` of a given square matrix:
+Your task is to implement the following function to find PLU decomposition of a given square matrix:
 
 ```java
 	/**
@@ -76,7 +76,7 @@ U = \begin{pmatrix}
 
 ### Exercise 2: Find the inverse of a given matrix using the PLU decomposition 
 
-Your task is to implement the following function for inverting matrices using `PLU decomposition`:
+Your task is to implement the following function to invert matrices using the PLU decomposition: 
 
 ```java
 	/**
