@@ -10,11 +10,11 @@ public class Solution {
 	* NOTE: It is guaranteed that a given matrix is square.
 	* NOTE: It is guaranteed that the PLU decomposition exists.
 	* 
-	* NOTE: to avoid issues with precision, use EPS = 1e-8 for detecting zeros:
-	* |x| < EPS => we assume that x is zero.
+	* NOTE: To avoid issues with precision, use EPS = 1e-8 to detect zeros:
+	* |x| < EPS => We assume that x is zero.
 	* 
 	* @param matrix a given square matrix for which we want to get the PLU decomposition.
-	* @return the result PLU decomposition that consists of the following matrices:
+	* @return the resulting PLU decomposition consists of the following matrices:
 	* - P - permutation matrix
 	* - L - lower triangular matrix
 	* - U - upper triangular matrix
@@ -27,12 +27,12 @@ public class Solution {
 	/**
 	* Returns the inverse for a given matrix.
 	*
-	* NOTE: Use `pluDecomposition` method from the previous coding exercise.
+	* NOTE: Use the `pluDecomposition` method from the previous coding exercise.
 	* NOTE: It is guaranteed that a given matrix is square.
 	* NOTE: It is guaranteed that the PLU decomposition exists.
 	* 
-	* NOTE: to avoid issues with precision, use EPS = 1e-8 for detecting zeros:
-	* |x| < EPS => we assume that x is zero.
+	* NOTE: To avoid issues with precision, use EPS = 1e-8 to detect zeros:
+	* |x| < EPS => We assume that x is zero.
 	* 
 	* @param matrix a given square matrix for which we want to get the inverse matrix.
 	* @return the inverse matrix.
