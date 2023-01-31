@@ -21,7 +21,7 @@ public class Solution {
 	*/
 	public static PluView pluDecomposition(double[][] matrix) {
 		//put your code here
-		return null;
+		return new PluView();
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public class Solution {
 	*/
 	public static double[][] getInverseMatrix(double[][] matrix) {
 		//put your code here
-		return null;
+		return new double[0][];
 	}
 
 }

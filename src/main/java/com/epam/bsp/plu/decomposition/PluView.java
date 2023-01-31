@@ -4,7 +4,10 @@ public class PluView {
 	private double[][] perm;
 	private double[][] lower;
 	private double[][] upper;
-	
+
+	public PluView() {
+	}
+
 	public PluView(double[][] perm, double[][] lower, double[][] upper) {
 		super();
 		this.perm = perm;
