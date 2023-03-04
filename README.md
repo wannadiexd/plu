@@ -100,7 +100,7 @@ Your task is to implement the following function to invert matrices using the PL
 * http://home.cc.umanitoba.ca/~farhadi/Math2120/Inverse%20Using%20LU%20decomposition.pdf
 * You may use the fact that:
 ```math
-A^{-1} = (P * L * U)^{-1} = U^{-1} * L^{-1} * P^{-1} = U^{-1} * L^{-1} * P
+A^{-1} = (P * L * U)^{-1} = U^{-1} * L^{-1} * P^{-1} = U^{-1} * L^{-1} * P^{T}
 ```
 
 **Example:**
