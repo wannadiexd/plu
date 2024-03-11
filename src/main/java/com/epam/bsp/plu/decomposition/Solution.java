@@ -1,112 +1,118 @@
 package com.epam.bsp.plu.decomposition;
 
 public class Solution {
+  
+  public final static double EPS = 1e-8;
+  
+  /**
+   * Returns a PLU decomposition of a given matrix.
+   *
+   * NOTE: It is guaranteed that a given matrix is square.
+   * NOTE: It is guaranteed that the PLU decomposition exists.
+   * 
+   * NOTE: To avoid issues with precision, use EPS = 1e-8 to detect zeros:
+   * |x| < EPS => We assume that x is zero.
+   * 
+   * @param matrix a given square matrix for which we want to get the PLU decomposition.
+   * @return the resulting PLU decomposition consists of the following matrices:
+   * - P - permutation matrix
+   * - L - lower triangular matrix
+   * - U - upper triangular matrix
+   */
+  public static PluView pluDecomposition(double[][] matrix) {
+    int n = matrix.length;
+    double[][] perm = new double[n][n];
+    double[][] lower = new double[n][n];
+    double[][] upper = new double[n][n];
 
-    public final static double EPS = 1e-8;
-
-    // Helper class to store the PLU decomposition
-    public static class PluView {
-        public double[][] P;
-        public double[][] L;
-        public double[][] U;
-
-        public PluView(double[][] P, double[][] L, double[][] U) {
-            this.P = P;
-            this.L = L;
-            this.U = U;
-        }
+    // Initialize perm matrix as identity matrix
+    for (int i = 0; i < n; i++) {
+      perm[i][i] = 1;
     }
 
-    // Method to perform PLU decomposition
-    public static PluView pluDecomposition(double[][] matrix) {
-        int n = matrix.length;
-        double[][] P = new double[n][n];
-        double[][] L = new double[n][n];
-        double[][] U = new double[n][n];
-
-        // Initialize permutation matrix to identity
-        for (int i = 0; i < n; i++) {
-            P[i][i] = 1;
+    // Perform PLU decomposition
+    for (int i = 0; i < n; i++) {
+      // Pivot row
+      int pivot = i;
+      for (int j = i + 1; j < n; j++) {
+        if (Math.abs(matrix[j][i]) > Math.abs(matrix[pivot][i])) {
+          pivot = j;
         }
-
-        // Copy matrix to U
-        for (int i = 0; i < n; i++) {
-            System.arraycopy(matrix[i], 0, U[i], 0, n);
+      }
+      // Swap rows in perm matrix
+      double[] temp = perm[i];
+      perm[i] = perm[pivot];
+      perm[pivot] = temp;
+      // Swap rows in matrix
+      double[] tempRow = matrix[i];
+      matrix[i] = matrix[pivot];
+      matrix[pivot] = tempRow;
+      
+      for (int j = i; j < n; j++) {
+        upper[i][j] = matrix[i][j];
+        for (int k = 0; k < i; k++) {
+          upper[i][j] -= lower[i][k] * upper[k][j];
         }
-
-        // Decompose matrix into PLU
-        for (int i = 0; i < n; i++) {
-            // Permute rows if needed
-            for (int j = i; j < n; j++) {
-                if (Math.abs(U[j][i]) > EPS) {
-                    double[] temp = U[i];
-                    U[i] = U[j];
-                    U[j] = temp;
-
-                    temp = P[i];
-                    P[i] = P[j];
-                    P[j] = temp;
-                    break;
-                }
-            }
-
-            // Compute L and U matrices
-            for (int j = i + 1; j < n; j++) {
-                L[j][i] = U[j][i] / U[i][i];
-                for (int k = i; k < n; k++) {
-                    U[j][k] -= L[j][i] * U[i][k];
-                }
-            }
+      }
+      
+      for (int j = i + 1; j < n; j++) {
+        lower[j][i] = matrix[j][i];
+        for (int k = 0; k < i; k++) {
+          lower[j][i] -= lower[j][k] * upper[k][i];
         }
-
-        // Fill diagonal of L with 1s
-        for (int i = 0; i < n; i++) {
-            L[i][i] = 1;
-        }
-
-        return new PluView(P, L, U);
+        lower[j][i] /= upper[i][i];
+      }
     }
 
-    // Method to calculate the inverse of a matrix
-    public static double[][] getInverseMatrix(double[][] matrix) {
-        PluView plu = pluDecomposition(matrix);
-        int n = matrix.length;
-        double[][] inverse = new double[n][n];
+    return new PluView(perm, lower, upper);
+  }
+  
+  /**
+   * Returns the inverse for a given matrix.
+   *
+   * NOTE: Use the pluDecomposition method from the previous coding exercise.
+   * NOTE: It is guaranteed that a given matrix is square.
+   * NOTE: It is guaranteed that the PLU decomposition exists.
+   * 
+   * NOTE: To avoid issues with precision, use EPS = 1e-8 to detect zeros:
+   * |x| < EPS => We assume that x is zero.
+   * 
+   * @param matrix a given square matrix for which we want to get the inverse matrix.
+   * @return the inverse matrix.
+   */
+  public static double[][] getInverseMatrix(double[][] matrix) {
+    PluView plu = pluDecomposition(matrix);
+    double[][] perm = plu.getPerm();
+    double[][] lower = plu.getLower();
+    double[][] upper = plu.getUpper();
+    int n = matrix.length;
+    double[][] inverse = new double[n][n];
 
-        // Solve for the inverse using the PLU decomposition
-        for (int col = 0; col < n; col++) {
-            double[] e = new double[n];
-            e[col] = 1;
-            // Forward substitution to solve for L * y = P * e
-            double[] y = new double[n];
-            for (int i = 0; i < n; i++) {
-                y[i] = e[i];
-                for (int j = 0; j < i; j++) {
-                    y[i] -= plu.L[i][j] * y[j];
-                }
-                y[i] /= plu.L[i][i];
-            }
-
-            // Backward substitution to solve for U * x = y
-            for (int i = n - 1; i >= 0; i--) {
-                inverse[i][col] = y[i];
-                for (int j = i + 1; j < n; j++) {
-                    inverse[i][col] -= plu.U[i][j] * inverse[j][col];
-                }
-                inverse[i][col] /= plu.U[i][i];
-            }
+    // Solve LY = P
+    double[][] y = new double[n][n];
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        double sum = perm[i][j];
+        for (int k = 0; k < i; k++) {
+          sum -= lower[i][k] * y[k][j];
         }
-
-        // Multiply by P transpose to get the final result
-        double[][] result = new double[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int k = 0; k < n; k++) {
-                    result[i][j] += inverse[i][k] * plu.P[k][j];
-                }
-            }
-        }
-
-        return result;
+        y[i][j] = sum;
+      }
     }
+
+    // Solve UX = Y
+    double[][] x = new double[n][n];
+    for (int i = n - 1; i >= 0; i--) {
+      for (int j = 0; j < n; j++) {
+        double sum = y[i][j];
+        for (int k = i + 1; k < n; k++) {
+          sum -= upper[i][k] * x[k][j];
+        }
+        x[i][j] = sum / upper[i][i];
+      }
+    }
+
+    return x;
+  }
+
 }
